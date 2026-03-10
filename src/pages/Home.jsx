@@ -245,7 +245,7 @@ export default function Home() {
               </button>
             </div>
             <video ref={videoRef} controls autoPlay>
-              <source src="/Videos/MicrosoftTeams-video.mp4" type="video/mp4" />
+              <source src="/videos/MicrosoftTeams-video.mp4" type="video/mp4" />
             </video>
           </div>
         </div>
