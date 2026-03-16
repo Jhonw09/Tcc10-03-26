@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import CustomAlert from '../components/CustomAlert'
+import { getMateriais } from '../services/api'
 import './Materials.css'
 
 export default function Materials() {
@@ -10,7 +11,13 @@ export default function Materials() {
   const observerRef = useRef(null)
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
 
+  const [apiMaterials, setApiMaterials] = useState([])
+
   useEffect(() => {
+    getMateriais()
+      .then(data => setApiMaterials(Array.isArray(data) ? data : []))
+      .catch(() => {})
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

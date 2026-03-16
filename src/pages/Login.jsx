@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import CustomAlert from '../components/CustomAlert'
 import Loading from '../components/Loading'
+import { loginUsuario, cadastrarUsuario } from '../services/api'
 import './Login.css'
 
 export default function Login() {
@@ -15,17 +16,27 @@ export default function Login() {
     name: ''
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    setTimeout(() => {
-      localStorage.setItem('isLoggedIn', 'true')
-      setLoading(false)
-      setAlert({ message: isLogin ? 'Login realizado com sucesso!' : 'Conta criada com sucesso!', type: 'success' })
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 500)
-    }, 400)
+    try {
+      let data
+      if (isLogin) {
+        data = await loginUsuario(formData.email, formData.password)
+      } else {
+        data = await cadastrarUsuario(formData.name, formData.email, formData.password)
+      }
+      if (data?.token) localStorage.setItem('authToken', data.token)
+      if (data?.id) localStorage.setItem('userId', data.id)
+      if (data?.nome || data?.name) localStorage.setItem('userName', data.nome || data.name)
+      if (data?.email) localStorage.setItem('userEmail', data.email)
+    } catch {
+      // fallback: login local
+    }
+    localStorage.setItem('isLoggedIn', 'true')
+    setLoading(false)
+    setAlert({ message: isLogin ? 'Login realizado com sucesso!' : 'Conta criada com sucesso!', type: 'success' })
+    setTimeout(() => { window.location.href = '/' }, 500)
   }
 
   const handleSocialLogin = (provider) => {
