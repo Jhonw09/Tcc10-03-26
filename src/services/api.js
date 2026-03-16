@@ -24,16 +24,16 @@ export const getMaterial = (id) => request(`/materiais/${id}`)
 
 // Usuários
 export const loginUsuario = (email, senha) =>
-  request('/usu%C3%A1rios', { method: 'POST', body: JSON.stringify({ email, senha }) })
+  request('/usuario', { method: 'POST', body: JSON.stringify({ email, senha }) })
 
 export const cadastrarUsuario = (nome, email, senha) =>
-  request('/usu%C3%A1rios', { method: 'POST', body: JSON.stringify({ nome, email, senha }) })
+  request('/usuario', { method: 'POST', body: JSON.stringify({ nome, email, senha }) })
 
 export const atualizarUsuario = (id, dados) =>
-  request(`/usu%C3%A1rios/${id}`, { method: 'PUT', body: JSON.stringify(dados) })
+  request(`/usuario/${id}`, { method: 'PUT', body: JSON.stringify(dados) })
 
 export const deletarUsuario = (id) =>
-  request(`/usu%C3%A1rios/${id}`, { method: 'DELETE' })
+  request(`/usuario/${id}`, { method: 'DELETE' })
 
 // Certificados
 export const getCertificados = (usuarioId) =>
