@@ -20,6 +20,8 @@
     linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   animation: patternMove 20s linear infinite;
+  will-change: transform;
+  contain: strict;
 }
 
 @keyframes patternMove {
@@ -167,9 +169,11 @@
   border: 1px solid rgba(51, 65, 85, 0.5);
   border-radius: 20px;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s, box-shadow 0.4s;
   animation: fadeInUp 0.6s ease-out both;
   cursor: pointer;
+  will-change: transform;
+  contain: layout style;
 }
 
 @keyframes fadeInUp {
