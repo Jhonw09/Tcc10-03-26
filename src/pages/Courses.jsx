@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CustomAlert from '../components/CustomAlert'
+import { getCursos } from '../services/api'
 import './Courses.css'
 
 export default function Courses() {
@@ -14,10 +15,15 @@ export default function Courses() {
   const [selectedLesson, setSelectedLesson] = useState(null)
   const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
 
+  const [apiCourses, setApiCourses] = useState([])
+
   useEffect(() => {
     setIsVisible(true)
     const saved = JSON.parse(localStorage.getItem('enrolledCourses') || '[]')
     setEnrolledCourses(saved)
+    getCursos()
+      .then(data => setApiCourses(Array.isArray(data) ? data : []))
+      .catch(() => {})
   }, [])
 
   const generateCoursePDF = (course) => {

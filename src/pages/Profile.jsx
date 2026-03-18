@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CustomAlert from '../components/CustomAlert'
+import { atualizarUsuario, deletarUsuario, getCertificados } from '../services/api'
 import './Profile.css'
 
 export default function Profile() {
@@ -13,54 +14,67 @@ export default function Profile() {
   })
   const [isEditing, setIsEditing] = useState(false)
   const [photoPreview, setPhotoPreview] = useState(localStorage.getItem('userPhoto') || '/images/2.png')
+  const [certificados, setCertificados] = useState([])
+  const userId = localStorage.getItem('userId')
+
+  useEffect(() => {
+    if (userId) {
+      getCertificados(userId)
+        .then(data => setCertificados(Array.isArray(data) ? data : []))
+        .catch(() => {})
+    }
+  }, [userId])
 
   const handleLogout = () => {
     localStorage.setItem('isLoggedIn', 'false')
     setAlert({ message: 'Logout realizado com sucesso!', type: 'success' })
-    setTimeout(() => {
-      navigate('/')
-    }, 1500)
+    setTimeout(() => navigate('/'), 1500)
   }
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    })
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0]
     if (file) {
       const reader = new FileReader()
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result)
-      }
+      reader.onloadend = () => setPhotoPreview(reader.result)
       reader.readAsDataURL(file)
     }
   }
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault()
+    if (userId) {
+      try {
+        await atualizarUsuario(userId, {
+          nome: formData.name,
+          email: formData.email,
+          ...(formData.password && { senha: formData.password })
+        })
+      } catch {}
+    }
     localStorage.setItem('userName', formData.name)
     localStorage.setItem('userEmail', formData.email)
-    if (photoPreview) {
-      localStorage.setItem('userPhoto', photoPreview)
-    }
+    if (photoPreview) localStorage.setItem('userPhoto', photoPreview)
     setAlert({ message: 'Perfil atualizado com sucesso!', type: 'success' })
     setIsEditing(false)
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm('Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.')) {
+      if (userId) {
+        try { await deletarUsuario(userId) } catch {}
+      }
       localStorage.removeItem('isLoggedIn')
       localStorage.removeItem('userName')
       localStorage.removeItem('userEmail')
       localStorage.removeItem('userPhoto')
+      localStorage.removeItem('authToken')
+      localStorage.removeItem('userId')
       setAlert({ message: 'Conta excluída com sucesso!', type: 'success' })
-      setTimeout(() => {
-        navigate('/')
-      }, 1500)
+      setTimeout(() => navigate('/'), 1500)
     }
   }
 
@@ -106,40 +120,17 @@ export default function Profile() {
               <form onSubmit={handleUpdate} className="profile-form">
                 <div className="form-group">
                   <label htmlFor="name">Nome</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
+                  <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
                   <label htmlFor="email">E-mail</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
+                  <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
                   <label htmlFor="password">Nova Senha (deixe em branco para manter)</label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="••••••••"
-                  />
+                  <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} placeholder="••••••••" />
                 </div>
-                <button type="submit" className="btn-save">
-                  Salvar Alterações
-                </button>
+                <button type="submit" className="btn-save">Salvar Alterações</button>
               </form>
             ) : (
               <div className="profile-info">
@@ -154,6 +145,22 @@ export default function Profile() {
               </div>
             )}
           </div>
+
+          {certificados.length > 0 && (
+            <div className="profile-card">
+              <div className="card-header">
+                <h3>🎓 Meus Certificados</h3>
+              </div>
+              <div className="profile-info">
+                {certificados.map((cert, i) => (
+                  <div key={cert.id || i} className="info-item">
+                    <span className="info-label">📜</span>
+                    <span className="info-value">{cert.titulo || cert.nome || cert.curso || JSON.stringify(cert)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="profile-actions">
             <button onClick={handleLogout} className="btn-logout">

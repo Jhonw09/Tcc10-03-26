@@ -1,13 +1,15 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import Home from './pages/Home'
-import Courses from './pages/Courses'
-import Materials from './pages/Materials'
-import Community from './pages/Community'
-import Login from './pages/Login'
-import Profile from './pages/Profile'
 import './App.css'
+
+const Home = lazy(() => import('./pages/Home'))
+const Courses = lazy(() => import('./pages/Courses'))
+const Materials = lazy(() => import('./pages/Materials'))
+const Community = lazy(() => import('./pages/Community'))
+const Login = lazy(() => import('./pages/Login'))
+const Profile = lazy(() => import('./pages/Profile'))
 
 function App() {
   return (
@@ -15,6 +17,7 @@ function App() {
       <div className="app">
         <Header />
         <main className="main">
+          <Suspense fallback={null}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/courses" element={<Courses />} />
@@ -23,6 +26,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
+          </Suspense>
         </main>
         <Footer />
       </div>
