@@ -1,0 +1,82 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: StudyConnect
+meta:
+  id: wrk_668b9cf4733d461d8dab66ab61d6efb5
+  created: 1773457237209
+  modified: 1773458049709
+  description: ""
+collection:
+  - url: http://localhost:8080/api/v1/usuarios
+    name: Salvar Usuarios
+    meta:
+      id: req_0c0c45ecc2474a9fa1f17814ae5aa709
+      created: 1773457237319
+      modified: 1773457883440
+      isPrivate: false
+      description: ""
+      sortKey: -1773457237319
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"nome": "Joao",
+        	"email": "joao@studyconnect.com",
+        	"senha": "123456",
+        	"tipoUsuario": "ALUNO",
+        	"ativo": true
+        	
+        	
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/12.4.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/v1/usuarios
+    name: Listar Usuarios
+    meta:
+      id: req_75114ff6267e42e2838f6d477fba200b
+      created: 1773457245262
+      modified: 1773457922541
+      isPrivate: false
+      description: ""
+      sortKey: -1773457245262
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/12.4.0
+        description: ""
+        disabled: false
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_0892129d4171f78a2df8dfb2a41ec11f27b392dd
+    created: 1773457237217
+    modified: 1773457237217
+environments:
+  name: Base Environment
+  meta:
+    id: env_0892129d4171f78a2df8dfb2a41ec11f27b392dd
+    created: 1773457237214
+    modified: 1773457237214
+    isPrivate: false
