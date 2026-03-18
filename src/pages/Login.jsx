@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import CustomAlert from '../components/CustomAlert'
 import Loading from '../components/Loading'
-import { loginUsuario, cadastrarUsuario } from '../services/api'
+import UsuarioService from '../services/UsuarioService'
 import './Login.css'
 
 export default function Login() {
@@ -22,9 +22,9 @@ export default function Login() {
     try {
       let data
       if (isLogin) {
-        data = await loginUsuario(formData.email, formData.password)
+        data = await UsuarioService.signin(formData.email, formData.password)
       } else {
-        data = await cadastrarUsuario(formData.name, formData.email, formData.password)
+        data = await UsuarioService.signup(formData.name, formData.email, formData.password)
       }
       if (data?.token) localStorage.setItem('authToken', data.token)
       if (data?.id) localStorage.setItem('userId', data.id)
